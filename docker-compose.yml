@@ -1,0 +1,17 @@
+services:
+  lastfm-scrobbles:
+    build: .
+    container_name: lastfm-scrobbles
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - LASTFM_DB=/data/lastfm_stats.db
+      - LASTFM_JSON=/data/lastfm_stats.json
+      - LASTFM_DETAIL_JSON=/data/lastfm_detail.json
+    volumes:
+      - ${DATOS:-./datos}:/data
+    # Solo para lanzar la sincronización a mano (POST /api/jobs/run); quítalo si no lo usas
+    ports:
+      - "127.0.0.1:${PUERTO:-8797}:5000"

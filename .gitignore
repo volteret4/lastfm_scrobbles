@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.encrypted.env
+__pycache__/
+*.pyc
+datos/
+*.db
+*.db-*
+lastfm_stats.json
+lastfm_detail.json
