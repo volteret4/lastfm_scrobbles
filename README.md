@@ -21,11 +21,13 @@ Rellena `.env` y arranca:
 mkdir -p datos && docker compose up -d --build
 ```
 
-Sincroniza al arrancar y luego cada `SYNC_EVERY_HOURS` horas (24 por defecto). El progreso se ve en el log:
+**Actualización automática:** el compose trae su propia [Ofelia](https://github.com/mcuadros/ofelia), que lanza `extraer_scrobbles.py` cada noche a las 00:00 (trabajo `lastfm-scrobbles-daily`, el mismo horario que en REPEAT-ONE). Para cambiar la hora, edita la etiqueta `ofelia.job-exec.lastfm-scrobbles-daily.schedule` (`seg min hora día mes día-semana`); para desactivarla, `docker compose stop ofelia`. Esta Ofelia solo ve los contenedores de este repo y necesita el socket de Docker en solo lectura. El resultado de cada ejecución se ve en su log:
 
 ```bash
-docker compose logs -f
+docker compose logs -f ofelia
 ```
+
+Si prefieres no usar Ofelia, `SYNC_EVERY_HOURS=24` hace que el propio servicio sincronice al arrancar y cada 24 horas.
 
 Para sincronizar a mano en cualquier momento:
 
@@ -72,7 +74,7 @@ Es un módulo de [REPEAT-ONE](https://volteret4.github.io/repeat-one-web/), y fu
 | `LASTFM_API_KEY`, `LASTFM_USERNAME` | Last.fm |
 | `LB_USERNAME`, `LB_TOKEN` | ListenBrainz (token solo si es privado) |
 | `MB_CONTACT` | Contacto para MusicBrainz, que lo pide en cada consulta |
-| `SYNC_EVERY_HOURS` | Sincronización automática (0 la desactiva) |
+| `SYNC_EVERY_HOURS` | Sincronización sin Ofelia, cada N horas (0, por defecto, la desactiva) |
 | `LASTFM_DB`, `LASTFM_JSON`, `LASTFM_DETAIL_JSON` | Dónde se escriben (en Docker, en `/data`) |
 
 Si prefieres no tener las claves en claro, `sops_env.py` descifra un `.encrypted.env` hecho con [SOPS](https://github.com/getsops/sops) al lanzarlo fuera de Docker.
